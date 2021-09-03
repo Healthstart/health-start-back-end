@@ -28,7 +28,7 @@ router.post("/register", (req, res) => {
 
 router.post("/login", (req, res) => {
   const checkSQL = `SELECT * FROM users WHERE email=?`;
-  const compareSQL = `SELECT password FROM users WHERE password=hex(aes_decrypt(?, '${process.env.DB_ENCRYPT}'))`;
+  const compareSQL = `SELECT password FROM users WHERE password=hex(aes_encrypt(?, '${process.env.DB_ENCRYPT}'))`;
 
   const { email, password } = req.body;
 
@@ -50,6 +50,7 @@ router.post("/login", (req, res) => {
       }
 
       /* Login API */
+      res.json({ success: "성공적으로 로그인 되었습니다." });
     });
   });
 });
