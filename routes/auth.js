@@ -14,11 +14,11 @@ router.post("/register", (req, res) => {
   }
 
   con.query(checkSQL, [email], (err, data) => {
-    if (data) {
+    if (data.length > 0) {
       res.status(400).send("같은 이메일이 있습니다!");
       return;
     }
-    
+
     con.query(insertSQL, [email, password, name], (err, data) => {
       if (err) throw err;
       console.log("data insert!");
