@@ -4,23 +4,13 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
-const mysql = require("mysql");
 
 const indexRouter = require("./routes/index");
 
-const con = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-});
-
+const con = require("./db/mysql");
 con.connect((err) => {
   if (err) throw err;
-  console.log("DB CONNECT!");
-  con.query('CREATE DATABASE health_start', (err, res) => {
-    if(err) throw err;
-    console.log('db create success')
-  })
+  console.log("Connect db");
 });
 
 const app = express();
