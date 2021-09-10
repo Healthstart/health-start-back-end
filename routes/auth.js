@@ -1,6 +1,7 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
 const con = require("../db/mysql");
+const jwt = require("jsonwebtoken");
 
 router.post("/register", (req, res) => {
   const insertSQL = `INSERT INTO users(email, password, name) VALUES(?, hex(aes_encrypt(?, '${process.env.DB_ENCRYPT}')), ?)`;
@@ -26,6 +27,18 @@ router.post("/register", (req, res) => {
   });
 });
 
+const createToken = (email) => {
+  return jwt.sign(
+    {
+      email,
+    },
+    process.env.JWT_KEY,
+    {
+      expiresIn: "1h",
+    }
+  );
+};
+
 router.post("/login", (req, res) => {
   const checkSQL = `SELECT * FROM users WHERE email=?`;
   const compareSQL = `SELECT password FROM users WHERE password=hex(aes_encrypt(?, '${process.env.DB_ENCRYPT}'))`;
@@ -45,12 +58,14 @@ router.post("/login", (req, res) => {
 
     con.query(compareSQL, [password], (err, data) => {
       if (data.length <= 0) {
-        res.json({ error: "비밀번호가 올바르지 않습니다." });
+        res.status(400).json({ error: "비밀번호가 올바르지 않습니다." });
         return;
       }
 
-      /* Login API */
-      res.json({ success: "성공적으로 로그인 되었습니다." });
+      const token = createToken(email);
+
+      res.cookie("token", token);
+      res.status(201).json({ success: "성공적으로 로그인 되었습니다.", token });
     });
   });
 });
