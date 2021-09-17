@@ -6,21 +6,23 @@ const jwt = require("jsonwebtoken");
 router.post("/register", (req, res) => {
   const insertSQL = `INSERT INTO users(email, password, name) VALUES(?, hex(aes_encrypt(?, '${process.env.DB_ENCRYPT}')), ?)`;
   const checkSQL = `SELECT * FROM users WHERE email=?`;
+  console.log(req.body);
+  const { email, password, username } = req.body;
 
-  const { email, password, name } = req.body;
-
-  if (!email || !password || !name) {
-    res.json({ error: "데이터가 올바르지 않습니다." });
+  if (!email || !password || !username) {
+    console.log(req.body);
+    res.status(400).json({ error: "데이터가 올바르지 않습니다." });
     return;
   }
 
   con.query(checkSQL, [email], (err, data) => {
+    console.log(data);
     if (data.length > 0) {
-      res.json({ error: "동일한 이메일이 이미 존재합니다." });
+      res.status(400).json({ error: "동일한 이메일이 이미 존재합니다." });
       return;
     }
 
-    con.query(insertSQL, [email, password, name], (err, data) => {
+    con.query(insertSQL, [email, password, username], (err, data) => {
       if (err) throw err;
       res.json({ success: "성공적으로 가입이 완료되었습니다." });
     });
@@ -46,19 +48,23 @@ router.post("/login", (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    res.json({ error: "데이터가 올바르지 않습니다." });
+    res.status(400).json({ error: "데이터가 올바르지 않습니다." });
     return;
   }
 
   con.query(checkSQL, [email], (err, data) => {
     if (data.length <= 0) {
-      res.json({ error: "존재하지 않는 이메일입니다." });
+      res
+        .status(400)
+        .json({ error: "이메일 혹은 비밀번호가 올바르지 않습니다." });
       return;
     }
 
     con.query(compareSQL, [password], (err, data) => {
       if (data.length <= 0) {
-        res.status(400).json({ error: "비밀번호가 올바르지 않습니다." });
+        res
+          .status(400)
+          .json({ error: "이메일 혹은 비밀번호가 올바르지 않습니다." });
         return;
       }
 
