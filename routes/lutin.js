@@ -32,4 +32,21 @@ router.get("/info/:id", verifyToken, (req, res, next) => {
   });
 });
 
+router.post("/delete/:id", verifyToken, (req, res, next) => {
+  const id = req.params.id;
+  const sql = "DELETE FROM lutins WHERE lutin_id = ?";
+  con.query(sql, [id], (err, data) => {
+    if (err) {
+      res.status(400).json({
+        error: "루틴 제거를 실패했습니다",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: "루틴을 성공적으로 제거했습니다",
+    });
+  });
+});
+
 module.exports = router;
