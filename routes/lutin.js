@@ -3,6 +3,17 @@ const router = express.Router();
 const con = require("../db/mysql");
 const verifyToken = require("./middlewares/authorization");
 
+router.get("/alluser", (req, res) => {
+  const sql =
+    "SELECT lutin_id, lutin_name, lutin_index, view_count, email FROM lutins";
+  con.query(sql, [], (err, data) => {
+    res.status(200).json({
+      success: "모든 루틴을 불러옵니다",
+      data,
+    });
+  });
+});
+
 router.get("/preview", verifyToken, (req, res, next) => {
   const sql =
     "SELECT lutin_id, lutin_name, lutin_index, view_count FROM lutins WHERE email = ?";
