@@ -68,11 +68,8 @@ router.get("/favorite", verifyToken, (req, res, next) => {
       res.status(400).json({
         error: "불러오지 못했습니다",
       });
-      console.log(err);
       return;
     }
-
-    console.log(data);
 
     res.status(200).json({
       success: "성공적으로 즐겨찾기 루틴을 불러왔습니다",
