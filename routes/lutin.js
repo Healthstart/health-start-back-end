@@ -60,4 +60,25 @@ router.post("/delete/:id", verifyToken, (req, res, next) => {
   });
 });
 
+router.get("/favorite", verifyToken, (req, res, next) => {
+  const sql =
+    "SELECT fav_lutins.lutin_id, lutin_name, lutin_index, view_count FROM fav_lutins LEFT JOIN lutins ON fav_lutins.lutin_id = lutins.lutin_id WHERE favoriter=?";
+  con.query(sql, [res.locals.email], (err, data) => {
+    if (err) {
+      res.status(400).json({
+        error: "불러오지 못했습니다",
+      });
+      console.log(err);
+      return;
+    }
+
+    console.log(data);
+
+    res.status(200).json({
+      success: "성공적으로 즐겨찾기 루틴을 불러왔습니다",
+      data,
+    });
+  });
+});
+
 module.exports = router;
