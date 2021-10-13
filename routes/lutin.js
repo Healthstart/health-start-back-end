@@ -36,7 +36,7 @@ router.get("/preview", verifyToken, (req, res, next) => {
   });
 });
 
-router.get("/info/:id", verifyToken, (req, res, next) => {
+router.get("/info/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT lutin_content FROM lutins WHERE lutin_id = ?";
   con.query(sql, [id], (err, data) => {
