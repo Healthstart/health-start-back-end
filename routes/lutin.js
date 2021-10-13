@@ -14,6 +14,17 @@ router.get("/alluser", (req, res) => {
   });
 });
 
+router.get("/alluser/order", (req, res) => {
+  const sql =
+    "SELECT lutin_id, lutin_name, lutin_index, view_count, email FROM lutins ORDER BY view_count DESC";
+  con.query(sql, [], (err, data) => {
+    res.status(200).json({
+      success: "모든 루틴을 불러옵니다",
+      data,
+    });
+  });
+});
+
 router.get("/preview", verifyToken, (req, res, next) => {
   const sql =
     "SELECT lutin_id, lutin_name, lutin_index, view_count FROM lutins WHERE email = ?";
