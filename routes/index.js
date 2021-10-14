@@ -6,6 +6,10 @@ const verifyToken = require("./middlewares/authorization");
 router.get("/profile", verifyToken, (req, res, next) => {
   const sql = "SELECT name, sub_date FROM users WHERE email=?";
   con.query(sql, [res.locals.email], (err, data) => {
+    if (data.length <= 0) {
+      return;
+    }
+
     const { name, sub_date } = data[0];
     res.json({
       success: "프로필을 불러옵니다",
