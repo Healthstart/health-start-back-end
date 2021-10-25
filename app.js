@@ -8,6 +8,7 @@ const cors = require("cors");
 const indexRouter = require("./routes/index");
 const authRouter = require("./routes/auth");
 const lutinRouter = require("./routes/lutin");
+const postRouter = require("./routes/post");
 
 const con = require("./db/mysql");
 con.connect((err) => {
@@ -27,6 +28,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
 app.use("/lutin", lutinRouter);
+app.use("/post", postRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
