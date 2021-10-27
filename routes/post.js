@@ -4,7 +4,7 @@ const con = require("../db/mysql");
 const verifyToken = require("./middlewares/authorization");
 
 router.get("/", (req, res) => {
-  const sql = "SELECT * FROM posts";
+  const sql = "SELECT * FROM posts order by id desc";
 
   con.query(sql, [], (err, data) => {
     res.status(200).json({
